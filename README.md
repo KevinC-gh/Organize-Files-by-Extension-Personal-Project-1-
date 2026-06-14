@@ -1,0 +1,1 @@
+This program allows users to select a source file, destination file, and file extension type, and the program will automatically move every file of that extension type from the source file to the destination file.
