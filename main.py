@@ -23,10 +23,11 @@ def main():
     options = [".png", ".jpg", ".docx", ".pdf"]
     dropdown = ttk.Combobox(root, width=15, values=options)
     dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="w")
-    dropdown_entry = ttk.Entry(root, width=8)
-    dropdown_entry.grid(row=2, column=1, sticky="w")
     dropdown.insert(0, "(Select File Type)")
-
+    
+    run_button = ttk.Button(root, text="Run", command=lambda: run(dropdown, source_folder_entry, dest_folder_entry))
+    run_button.grid(row=3, column=0, padx=20, pady=10, sticky="w")
+    
     root.mainloop()
 
 def add_source_folder(source_folder_entry):
@@ -36,5 +37,10 @@ def add_source_folder(source_folder_entry):
 def add_dest_folder(dest_folder_entry):
     folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
     dest_folder_entry.insert(0, folder_path)
+
+def run(dropdown, source_folder_entry, dest_folder_entry):
+    file_type_selection = dropdown.get()
+    source_folder = source_folder_entry.get()
+    dest_folder = dest_folder_entry.get()
 
 main()
