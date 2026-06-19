@@ -8,31 +8,33 @@ def main():
     
     root = tk.Tk()
     root.title("Sort by Extension")
-    root.geometry("700x200")
+    root.geometry("1000x200")
 
-    source_folder_entry = ttk.Entry(root, width=50, state="readonly")
-    source_folder_entry.grid(row=0, column=6)
-    source_folder_button = ttk.Button(root, text="Add Source Folder", command=add_source_folder)
-    source_folder_button.grid(row=0, column=0)
+    source_folder_entry = ttk.Entry(root, width=100)
+    source_folder_entry.grid(row=0, column=1, padx=20, pady=5, sticky="w")
+    source_folder_button = ttk.Button(root, text="Add Source Folder", command=lambda: add_source_folder(source_folder_entry))
+    source_folder_button.grid(row=0, column=0, padx=20, pady=5, sticky="w")
 
-    dest_folder_entry = ttk.Entry(root, width=50, state="readonly")
-    dest_folder_entry.grid(row=6, column=6)
-    dest_folder_button = ttk.Button(root, text="Add Destination Folder", command=add_dest_folder)
-    dest_folder_button.grid(row=6, column=0)
+    dest_folder_entry = ttk.Entry(root, width=100)
+    dest_folder_entry.grid(row=1, column=1, padx=20, pady=5, sticky="w")
+    dest_folder_button = ttk.Button(root, text="Add Destination Folder", command=lambda: add_dest_folder(dest_folder_entry))
+    dest_folder_button.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-    options = [".png", ".jpg", "docx", ".pdf"]
-    dropdown = ttk.Combobox(root, values=options, state="readonly")
-    dropdown.grid(row=12, column=0)
-    dropdown_entry = ttk.Entry(root, width=20, state="readonly")
-    dropdown_entry.grid(row=12, column=6)
-    
+    options = [".png", ".jpg", ".docx", ".pdf"]
+    dropdown = ttk.Combobox(root, width=15, values=options)
+    dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="w")
+    dropdown_entry = ttk.Entry(root, width=8)
+    dropdown_entry.grid(row=2, column=1, sticky="w")
+    dropdown.insert(0, "(Select File Type)")
 
     root.mainloop()
 
-def add_source_folder():
+def add_source_folder(source_folder_entry):
     folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
-    source_folder_entry.insert(str(folder_path))
-def add_dest_folder():
+    source_folder_entry.insert(0, folder_path)
+
+def add_dest_folder(dest_folder_entry):
     folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
+    dest_folder_entry.insert(0, folder_path)
 
 main()
