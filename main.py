@@ -9,7 +9,7 @@ def main():
     
     root = tk.Tk()
     root.title("Sort by Extension")
-    root.geometry("1000x500")
+    root.geometry("1100x400")
 
     source_folder_entry = ttk.Entry(root, width=100)
     source_folder_entry.grid(row=0, column=1, padx=20, pady=5, sticky="w")
@@ -21,7 +21,7 @@ def main():
     dest_folder_button = ttk.Button(root, text="Add Destination Folder", command=lambda: add_dest_folder(dest_folder_entry))
     dest_folder_button.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-    dropdown_textbox = tk.Text(root, width=8, height=15)
+    dropdown_textbox = tk.Text(root, width=6, height=1)
     dropdown_textbox.grid(row=2, column=1, padx=20, pady=5, sticky="w")
 
     options = [".png", ".jpg", ".docx", ".pdf", ".txt"]
@@ -31,7 +31,7 @@ def main():
     dropdown.bind("<<ComboboxSelected>>", lambda event: list_selected(event, dropdown, dropdown_textbox))
 
     run_button = ttk.Button(root, text="Run", command=lambda: run(dropdown_textbox, source_folder_entry, dest_folder_entry))
-    run_button.grid(row=3, column=0, padx=20, pady=10, sticky="w")
+    run_button.grid(row=3, column=1, padx=20, pady=10, sticky="nw")
 
     root.mainloop()
 
@@ -44,9 +44,12 @@ def add_dest_folder(dest_folder_entry):
     dest_folder_entry.insert(0, folder_path)
 
 def list_selected(_, dropdown, dropdown_textbox):
+    dropdown_textbox.config(state="normal")
     dropdown_selection = dropdown.get()
-    dropdown_textbox.insert(tk.END, f"{dropdown_selection}\n")
+    dropdown_textbox.insert("1.0", f"{dropdown_selection}\n")
     dropdown.set("Select File Type(s)")
+    new_height = dropdown_textbox.cget("height") + 1
+    dropdown_textbox.config(height=new_height, state="disabled")
 
 def run(dropdown_textbox, source_folder_entry, dest_folder_entry):
     file_type_selections = dropdown_textbox.get("1.0","end-2c")
