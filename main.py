@@ -35,9 +35,9 @@ def main():
     dropdown.bind("<<ComboboxSelected>>", 
                   lambda event: list_selected(event, dropdown, dropdown_textbox, options)) 
 
-    include_subfolders = tk.IntVar()
+    include_subfolders = tk.BooleanVar()
     subfolder_checkbox = ttk.Checkbutton(root, text="Include Subfolders", variable=include_subfolders,
-                                         onvalue=1, offvalue=0)
+                                         onvalue=True, offvalue=False)
     subfolder_checkbox.grid(row=3, column=0, padx=20, pady=10, sticky="w")
 
     run_button = ttk.Button(root, text="Run",  command=lambda: run(dropdown_textbox, source_folder_entry, 
@@ -86,19 +86,33 @@ def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, in
     if dropdown_textbox.get("1.0","end-2c") == '':
         status_box.config(text="Error: No File Types selected")
         return
-    
+
     file_type_selections = dropdown_textbox.get("1.0","end-2c")
     source_folder = source_folder_entry.get()
     dest_folder = dest_folder_entry.get()
     selections_list = file_type_selections.split("\n")
-    source_files = os.listdir(source_folder)
-
-    for file_type in selections_list:
-        for file in source_files:
-            if file.endswith(file_type):
-                full_source_path = os.path.abspath(os.path.join(source_folder, file))
-                full_dest_path = os.path.abspath(os.path.join(dest_folder, file))
-                os.rename(full_source_path, full_dest_path)
-                print(f"{file} moved successfully")
-
+    
+    if include_subfolders.get() == False:
+        source_files = os.listdir(source_folder)
+        for file_type in selections_list:
+            for file in source_files:
+                if file.endswith(file_type):
+                    full_source_path = os.path.abspath(os.path.join(source_folder, file))
+                    full_dest_path = os.path.abspath(os.path.join(dest_folder, file))
+                    os.rename(full_source_path, full_dest_path)
+                    print(f"{file} moved successfully")
+    
+    if include_subfolders.get() == True:
+        source_file_paths = []
+        for path, dirs, files in os.walk(source_folder):
+            for file in files:
+                source_file_paths.append(os.path.join(path, file))
+        for file_type in selections_list:
+            for file_path in source_file_paths:
+                if file_path.endswith(file_type):
+                    file_name = os.path.basename(file_path)
+                    full_dest_path = os.path.abspath(os.path.join(dest_folder, file_name))
+                    os.rename(file_path, full_dest_path)
+                    print(f"{file_name} moved successfully")
+                    
 main()
