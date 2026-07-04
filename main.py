@@ -9,7 +9,7 @@ def main():
     
     root = tk.Tk()
     root.title("Sort by Extension")
-    root.geometry("1100x400")
+    root.geometry("1200x400")
     bg_color = "LightBlue2"
     root.configure(bg=bg_color)
 
@@ -35,14 +35,17 @@ def main():
                ".png", ".py", ".ra", ".rar", ".rss", ".rtf", ".sh", ".sit", ".snd", ".swift",
                ".tar", ".tif", ".ts", ".txt", ".wav", ".webp", ".wma", ".wmv", ".wps", ".xhtml",
                ".xlsx", ".z", ".zip", 
-               "All Text Formats", "All Image Formats", "All Video Formats", "All Audio Formats",
+               "All Text Formats", "All Image Formats", "All Audio Formats", "All Video Formats",
                "All Program File Formats", "All Compressed/Archive Formats", "All Web Page File Formats"]
     
-    dropdown = ttk.Combobox(root, width=30, values=options, state="readonly")
+    dropdown = ttk.Combobox(root, width=27, values=options, state="readonly")
     dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
     dropdown.set("Select File Type(s)")
     dropdown.bind("<<ComboboxSelected>>", 
                   lambda event: list_selected(event, dropdown, dropdown_textbox, options))
+
+    undo_button = ttk.Button(root, text="Undo", command=lambda: undo_last_file_type(dropdown_textbox))
+    undo_button.grid(row=2, column=1, pady=5)
 
     include_subfolders = tk.BooleanVar()
     subfolder_checkbox = ttk.Checkbutton(root, text="Include Subfolders", variable=include_subfolders,
@@ -57,7 +60,6 @@ def main():
                           bd=0, highlightthickness=0, fg="firebrick3",
                           anchor="w", font=("Arial", 12, "bold"))
     status_box.grid(row=4, column=1, padx=20, pady=10, sticky="w")
-    
     
     root.mainloop()
 
@@ -87,11 +89,42 @@ def list_selected(_, dropdown, dropdown_textbox, options):
     dropdown.config(values=options)
 
 def get_file_type_selections(dropdown_textbox):
+    
     file_type_selections = dropdown_textbox.get("1.0","end-2c")
+    
     if "All Text Formats" in file_type_selections:
-        file_type_selections = file_type_selections.replace("All Text Formats", ".txt\n.rtf\n.docx\n.csv\n.doc\n.wps\n.wpd\n.msg")
-    print(f"file types: {file_type_selections}")
+        file_type_selections = file_type_selections.replace("All Text Formats", 
+                                                            ".txt\n.rtf\n.docx\n.csv\n.doc\n.wps\n.wpd\n.msg")
+    
+    if "All Image Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Image Formats", 
+                                                            ".jpg\n.jpeg\n.webp\n.gif\n.tif\n.tif\n.bmp\n.eps")
+    
+    if "All Audio Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Audio Formats", 
+                                                            ".mp3\n.wma\n.snd\n.wav\n.ra\n.au\n.acc")
+
+    if "All Video Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Video Formats", 
+                                                            ".mp4\n.3gp\n.avi\n.mpg\n.mov\n.wmv")
+
+    if "All Program File Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Program File Formats", 
+                                                            ".c\n.cpp\n.java\n.py\n.js\n.ts\n.cs\n.swift\n.dta\n.pl\n.sh\n.bat\n.com\n.exe")
+    
+    if "All Compressed/Archive Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Compressed/Archive Formats",
+                                                            ".rar\n.zip\n.hqx\n.arj\n.tar\n.arc\n.sit\n.gz\n.z")
+    
+    if "All Web Page File Formats" in file_type_selections:
+        file_type_selections = file_type_selections.replace("All Web Page File Formats",
+                                                            ".html\n.htm\n.xhtml\n.asp\n.css\n.aspx\n.rss")
+    
     return file_type_selections
+
+def undo_last_file_type(dropdown_textbox):
+    dropdown_textbox.delete()
+
 
 def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, include_subfolders):   
     if source_folder_entry.get() == '':
@@ -120,7 +153,6 @@ def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, in
     source_folder = source_folder_entry.get()
     dest_folder = dest_folder_entry.get()
     selections_list = file_type_selections.split("\n")
-    print(f"Selections list: {selections_list}")
 
     if include_subfolders.get() == False:
         counter = 0
