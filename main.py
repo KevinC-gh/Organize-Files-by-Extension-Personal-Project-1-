@@ -28,23 +28,24 @@ def main():
     dropdown_textbox = tk.Text(root, width=30, height=1)
     dropdown_textbox.grid(row=2, column=1, padx=20, pady=5, sticky="w")
 
-    options = [".3gp", ".7z", ".aac", ".arc", ".arj", ".asp", "aspx", ".au", ".avi", ".bat",
+    options = [".3gp", ".7z", ".aac", ".arc", ".arj", ".asp", ".aspx", ".au", ".avi", ".bat",
                ".bin", ".bmp", ".c", ".com", ".cpp", ".cs", ".css", ".csv", ".doc", ".docx",
-               ".dta", ".eml", ".eps", ".exe", ".gif", ".gz", ".htm", "html", ".hqx", ".java",
+               ".dta", ".eml", ".eps", ".exe", ".gif", ".gz", ".hqx", ".htm", ".html", ".java",
                ".jpeg", ".jpg", ".js", ".mov", ".mp3", ".mp4", ".mpg", ".msg", ".pdf", ".pl",
                ".png", ".py", ".ra", ".rar", ".rss", ".rtf", ".sh", ".sit", ".snd", ".swift",
                ".tar", ".tif", ".ts", ".txt", ".wav", ".webp", ".wma", ".wmv", ".wps", ".xhtml",
                ".xlsx", ".z", ".zip", 
-               "All Text Formats", "All Image Formats", "All Audio Formats", "All Video Formats",
-               "All Program File Formats", "All Compressed/Archive Formats", "All Web Page File Formats"]
-    
+               "All Audio Formats", "All Compressed/Archive Formats", "All Image Formats", "All Program File Formats",
+               "All Text Formats",  "All Video Formats", "All Web Page File Formats"]
+
     dropdown = ttk.Combobox(root, width=27, values=options, state="readonly")
     dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
     dropdown.set("Select File Type(s)")
     dropdown.bind("<<ComboboxSelected>>", 
                   lambda event: list_selected(event, dropdown, dropdown_textbox, options))
 
-    undo_button = ttk.Button(root, text="Undo", command=lambda: undo_last_file_type(dropdown_textbox))
+    undo_button = ttk.Button(root, text="Undo", 
+                             command=lambda: undo_last_file_type(dropdown_textbox, dropdown, options))
     undo_button.grid(row=2, column=1, pady=5)
 
     include_subfolders = tk.BooleanVar()
@@ -122,9 +123,14 @@ def get_file_type_selections(dropdown_textbox):
     
     return file_type_selections
 
-def undo_last_file_type(dropdown_textbox):
-    dropdown_textbox.delete()
-
+def undo_last_file_type(dropdown_textbox, dropdown, options):
+    last_line = dropdown_textbox.get("end-2l", "end-1l")
+    last_line = last_line.replace("\n", "")
+    options.append(last_line)
+    options.sort()
+    dropdown.config(values=options)
+    dropdown_textbox.delete("end-2l", tk.END)
+    return
 
 def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, include_subfolders):   
     if source_folder_entry.get() == '':
