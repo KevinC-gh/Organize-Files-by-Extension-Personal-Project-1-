@@ -46,22 +46,26 @@ def main():
 
     undo_button = ttk.Button(root, text="Undo", 
                              command=lambda: undo_last_file_type(dropdown_textbox, dropdown, options))
-    undo_button.grid(row=2, column=1, pady=5)
+    undo_button.place(x=560, y=78)
+
+    clear_all_button = ttk.Button(root, text="Clear All",
+                                  command=lambda: clear_entries(dropdown_textbox, dropdown, options))
+    clear_all_button.place(x=650, y=78)
 
     include_subfolders = tk.BooleanVar()
     subfolder_checkbox = ttk.Checkbutton(root, text="Include Subfolders", variable=include_subfolders,
                                          onvalue=True, offvalue=False)
     subfolder_checkbox.grid(row=3, column=0, padx=20, pady=10, sticky="w")
 
-    run_button = ttk.Button(root, text="Run",  command=lambda: run(dropdown_textbox, source_folder_entry, 
+    run_button = tk.Button(root, text="Run",
+                            command=lambda: run(dropdown_textbox, source_folder_entry, 
                                                 dest_folder_entry, status_box, include_subfolders))
     run_button.grid(row=3, column=1, padx=20, pady=10, sticky="nw")
 
     status_box = tk.Label(root, width=100,bg=bg_color, relief="flat",
-                          bd=0, highlightthickness=0, fg="firebrick3",
-                          anchor="w", font=("Arial", 12, "bold"))
+                          bd=0, highlightthickness=0, anchor="w", font=("Arial", 12, "bold"))
     status_box.grid(row=4, column=1, padx=20, pady=10, sticky="w")
-    
+
     root.mainloop()
 
 def add_source_folder(source_folder_entry):
@@ -129,30 +133,44 @@ def undo_last_file_type(dropdown_textbox, dropdown, options):
     options.append(last_line)
     options.sort()
     dropdown.config(values=options)
-    dropdown_textbox.delete("end-2l", tk.END)
+    dropdown_textbox.config(state="normal")
+    dropdown_textbox.delete("end-2l", "end-1l")
+    new_height = dropdown_textbox.cget("height") -1
+    dropdown_textbox.config(state="disabled", height=new_height)
+    return
+
+def clear_entries(dropdown_textbox, dropdown, options):
+    all_lines = dropdown_textbox.get("1.0", "end-1l")
+    all_lines = all_lines.replace("\n", "")
+    options.append(all_lines)
+    options.sort()
+    dropdown.config(values=options)
+    dropdown_textbox.config(state="normal")
+    dropdown_textbox.delete("1.0", "end-1l")
+    dropdown_textbox.config(state="disabled", height=1)
     return
 
 def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, include_subfolders):   
     if source_folder_entry.get() == '':
-        status_box.config(text="Error: No Source Folder selected")
+        status_box.config(fg="firebrick3", text="Error: No Source Folder selected")
         return
     
     if dest_folder_entry.get() == '':
-        status_box.config(text="Error: No Destination Folder selected")
+        status_box.config(fg="firebrick3", text="Error: No Destination Folder selected")
         return
 
     if dropdown_textbox.get("1.0","end-2c") == '':
-        status_box.config(text="Error: No File Types selected")
+        status_box.config(fg="firebrick3", text="Error: No File Types selected")
         return
 
     source_folder = source_folder_entry.get()
     if os.path.isdir(source_folder) == False:
-        status_box.config(text="Error: Invalid Source Folder")
+        status_box.config(fg="firebrick3", text="Error: Invalid Source Folder")
         return
     
     dest_folder = dest_folder_entry.get()
     if os.path.isdir(dest_folder) == False:
-        status_box.config(text="Error: Invalid Destination Folder")
+        status_box.config(fg="firebrick3", text="Error: Invalid Destination Folder")
         return
     
     file_type_selections = get_file_type_selections(dropdown_textbox)
@@ -171,10 +189,10 @@ def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, in
                     os.rename(full_source_path, full_dest_path)
                     counter += 1
         if counter == 0:
-            status_box.config(text=f"No valid files found in {os.path.basename(source_folder)}")
+            status_box.config(fg="DarkOrange2", text=f"No valid files found in {os.path.basename(source_folder)}")
         else:
             status_box.config(fg="green4", text=f"{counter} file(s) moved from {os.path.basename(source_folder)} to {os.path.basename(dest_folder)}")
-    
+
     if include_subfolders.get() == True:
         source_file_paths = []
         counter = 0
@@ -189,7 +207,7 @@ def run(dropdown_textbox, source_folder_entry, dest_folder_entry, status_box, in
                     os.rename(file_path, full_dest_path)
                     counter += 1
         if counter == 0:
-            status_box.config(text=f"No valid files found in {os.path.basename(source_folder)} or subfolders")
+            status_box.config(fg="DarkOrange2", text=f"No valid files found in {os.path.basename(source_folder)} or subfolders")
         else:
             status_box.config(fg="green4", text=f"{counter} file(s) moved from {os.path.basename(source_folder)} to {os.path.basename(dest_folder)}")
 
