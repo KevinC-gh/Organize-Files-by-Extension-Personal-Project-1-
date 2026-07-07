@@ -8,8 +8,8 @@ from tkinter import filedialog
 def main():
     
     root = tk.Tk()
-    root.title("Sort by Extension")
-    root.geometry("1200x400")
+    root.title("EXT Sorter")
+    root.geometry("1200x300")
     bg_color = "LightBlue2"
     root.configure(bg=bg_color)
 
@@ -19,11 +19,19 @@ def main():
                                       command=lambda: add_source_folder(source_folder_entry))
     source_folder_button.grid(row=0, column=0, padx=20, pady=5, sticky="w")
 
+    source_clear_button = ttk.Button(root, text="Clear",
+                                     command=lambda: clear_source(source_folder_entry))
+    source_clear_button.place(x=1110, y=5)
+
     dest_folder_entry = ttk.Entry(root, width=100)
     dest_folder_entry.grid(row=1, column=1, padx=20, pady=5, sticky="w")
     dest_folder_button = ttk.Button(root, text="Add Destination Folder", 
                                     command=lambda: add_dest_folder(dest_folder_entry))
     dest_folder_button.grid(row=1, column=0, padx=20, pady=5, sticky="w")
+
+    dest_clear_button = ttk.Button(root, text="Clear",
+                                     command=lambda: clear_source(dest_folder_entry))
+    dest_clear_button.place(x=1110, y=43)
 
     dropdown_textbox = tk.Text(root, width=30, height=1)
     dropdown_textbox.grid(row=2, column=1, padx=20, pady=5, sticky="w")
@@ -73,10 +81,16 @@ def add_source_folder(source_folder_entry):
     folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
     source_folder_entry.insert(0, folder_path)
 
+def clear_source(source_folder_entry):
+    source_folder_entry.delete(0, tk.END)
+
 def add_dest_folder(dest_folder_entry):
     dest_folder_entry.delete(0, tk.END)
     folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
     dest_folder_entry.insert(0, folder_path)
+
+def clear_dest(dest_folder_entry):
+    dest_folder_entry.delete(0, tk.END)
 
 def list_selected(_, dropdown, dropdown_textbox, options):
     #display selection option, temporarily enable dropdown textbox edits to allow text to display

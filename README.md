@@ -1,1 +1,2 @@
-This program allows users to select a source file, destination file, and file extension type, and the program will automatically move every file of that extension type from the source file to the destination file.
+EXT SORTER
+This program allows users move files from one folder to another based on their file extensions. Users select a source folder, destination folder, and extension types to move and the program will automatically move all files of the specified extension types.
