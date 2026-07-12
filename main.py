@@ -1,5 +1,3 @@
-#run: python3 main.py
-#cd workspace/bootdev/personal_project_1
 import os
 import tkinter as tk
 from tkinter import ttk
@@ -9,11 +7,11 @@ def main():
     
     root = tk.Tk()
     root.title("EXT Sorter")
-    root.geometry("1200x300")
+    root.geometry("900x400")
     bg_color = "LightBlue2"
     root.configure(bg=bg_color)
 
-    source_folder_entry = ttk.Entry(root, width=100)
+    source_folder_entry = ttk.Entry(root, width=30)
     source_folder_entry.grid(row=0, column=1, padx=20, pady=5, sticky="w")
     source_folder_button = ttk.Button(root, text="Add Source Folder", 
                                       command=lambda: add_source_folder(source_folder_entry))
@@ -21,9 +19,9 @@ def main():
 
     source_clear_button = ttk.Button(root, text="Clear",
                                      command=lambda: clear_source(source_folder_entry))
-    source_clear_button.place(x=1110, y=5)
+    source_clear_button.grid(row=0, column=2, padx=20, pady=5, sticky="e")
 
-    dest_folder_entry = ttk.Entry(root, width=100)
+    dest_folder_entry = ttk.Entry(root, width=30)
     dest_folder_entry.grid(row=1, column=1, padx=20, pady=5, sticky="w")
     dest_folder_button = ttk.Button(root, text="Add Destination Folder", 
                                     command=lambda: add_dest_folder(dest_folder_entry))
@@ -31,7 +29,7 @@ def main():
 
     dest_clear_button = ttk.Button(root, text="Clear",
                                      command=lambda: clear_source(dest_folder_entry))
-    dest_clear_button.place(x=1110, y=43)
+    dest_clear_button.grid(row=1, column=2, padx=20, pady=5, sticky="e")
 
     dropdown_textbox = tk.Text(root, width=30, height=1)
     dropdown_textbox.grid(row=2, column=1, padx=20, pady=5, sticky="w")
@@ -47,18 +45,18 @@ def main():
                "All Text Formats",  "All Video Formats", "All Web Page File Formats"]
 
     dropdown = ttk.Combobox(root, width=27, values=options, state="readonly")
-    dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+    dropdown.grid(row=2, column=0, padx=20, pady=5, sticky="w")
     dropdown.set("Select File Type(s)")
     dropdown.bind("<<ComboboxSelected>>", 
                   lambda event: list_selected(event, dropdown, dropdown_textbox, options))
 
     undo_button = ttk.Button(root, text="Undo", 
                              command=lambda: undo_last_file_type(dropdown_textbox, dropdown, options))
-    undo_button.place(x=560, y=78)
+    undo_button.grid(row=2, column=2, padx=20, pady=5, sticky="w")
 
     clear_all_button = ttk.Button(root, text="Clear All",
                                   command=lambda: clear_entries(dropdown_textbox, dropdown, options))
-    clear_all_button.place(x=650, y=78)
+    clear_all_button.grid(row=2, column=3, padx=20, pady=5, sticky="w")
 
     include_subfolders = tk.BooleanVar()
     subfolder_checkbox = ttk.Checkbutton(root, text="Include Subfolders", variable=include_subfolders,
@@ -70,15 +68,17 @@ def main():
                                                 dest_folder_entry, status_box, include_subfolders))
     run_button.grid(row=3, column=1, padx=20, pady=10, sticky="nw")
 
-    status_box = tk.Label(root, width=100,bg=bg_color, relief="flat",
-                          bd=0, highlightthickness=0, anchor="w", font=("Arial", 12, "bold"))
-    status_box.grid(row=4, column=1, padx=20, pady=10, sticky="w")
+    frame = tk.Frame(root, width=100, bg=bg_color, relief="flat", bd=0, highlightthickness=0)
+    frame.grid(row=4, column=1, columnspan=3, sticky="w")
+
+    status_box = tk.Label(frame, bg=bg_color, font=("Arial", 12, "bold"))
+    status_box.grid(row=0, column=0, padx=20, pady=10, sticky="w")
 
     root.mainloop()
 
 def add_source_folder(source_folder_entry):
     source_folder_entry.delete(0, tk.END)
-    folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
+    folder_path = filedialog.askdirectory(initialdir="os.path.expanduser('~')", title="Select Folder")
     source_folder_entry.insert(0, folder_path)
 
 def clear_source(source_folder_entry):
@@ -86,7 +86,7 @@ def clear_source(source_folder_entry):
 
 def add_dest_folder(dest_folder_entry):
     dest_folder_entry.delete(0, tk.END)
-    folder_path = filedialog.askdirectory(initialdir="/mnt/c/users", title="Select Folder")
+    folder_path = filedialog.askdirectory(initialdir="os.path.expanduser('~')", title="Select Folder")
     dest_folder_entry.insert(0, folder_path)
 
 def clear_dest(dest_folder_entry):
@@ -155,8 +155,10 @@ def undo_last_file_type(dropdown_textbox, dropdown, options):
 
 def clear_entries(dropdown_textbox, dropdown, options):
     all_lines = dropdown_textbox.get("1.0", "end-1l")
-    all_lines = all_lines.replace("\n", "")
-    options.append(all_lines)
+    all_lines = all_lines.split("\n")
+    for line in all_lines:
+        if "." in line or "All" in line:
+            options.append(line)
     options.sort()
     dropdown.config(values=options)
     dropdown_textbox.config(state="normal")

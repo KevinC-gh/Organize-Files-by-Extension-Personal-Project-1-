@@ -19,4 +19,3 @@ Then run the program using:
 ```
 python3 main.py
 ```
-
