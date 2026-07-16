@@ -25,7 +25,7 @@ The user interface window should appear and look like this:
 <img width="1207" height="329" alt="EXT-Sorter_screenshot" src="https://github.com/user-attachments/assets/74623548-c5a3-4c83-b698-64b11da95db9"/>
 
 
-Use the "Add Source Folder" and "Add Destination Folder" to add the folders you want to move to and from. The Source Folder is the folder you're moving from whereas the destinaton folder is the location you're moving files to. Note that when selecting a folder, you must go into that folder to select it - just clicking on the folder won't actually select it. Use the "Selection" box at the bottom of the window to make sure it's the right file path.
+Use the "Add Source Folder" and "Add Destination Folder" to add the folders you want to move to and from. The Source Folder is the folder you're moving files from whereas the destinaton folder is the location you're moving files to. Note that when selecting a folder, you must go into that folder to select it - just clicking on the folder won't actually select it. Use the "Selection" box at the bottom of the window to make sure it's the right file path.
 
 
 <img width="422" height="283" alt="select_folder" src="https://github.com/user-attachments/assets/139e91b3-ddef-461f-930d-4a8e7f8bb0dd" />
